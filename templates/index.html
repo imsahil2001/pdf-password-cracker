@@ -3,335 +3,168 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Unlocker</title>
+  <title>SYS.XXII — PDF Utility</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh;
-      background: #0f0f13;
-      color: #e8e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .card {
-      background: #1a1a24;
-      border: 1px solid #2a2a3a;
-      border-radius: 16px;
-      padding: 40px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #7c3aed, #4f46e5);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #f0f0fa;
-    }
-
-    .subtitle {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 32px;
-      margin-top: 6px;
-    }
-
-    .drop-zone {
-      border: 2px dashed #2e2e44;
-      border-radius: 12px;
-      padding: 36px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: #7c3aed;
-      background: rgba(124, 58, 237, 0.06);
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .drop-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
-    }
-
-    .drop-text {
-      font-size: 15px;
-      color: #aaa;
-    }
-
-    .drop-text strong {
-      color: #a78bfa;
-    }
-
-    .drop-sub {
-      font-size: 12px;
-      color: #555;
-      margin-top: 6px;
-    }
-
-    .file-info {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      background: rgba(124, 58, 237, 0.1);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .file-info .file-name {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: #c4b5fd;
-    }
-
-    .remove-btn {
-      background: none;
-      border: none;
-      color: #666;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 0 4px;
-    }
-
-    .remove-btn:hover { color: #f87171; }
-
-    label.field-label {
-      display: block;
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    input[type="password"] {
-      width: 100%;
-      background: #12121a;
-      border: 1px solid #2a2a3a;
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: #e8e8f0;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s;
-      margin-bottom: 24px;
-    }
-
-    input[type="password"]:focus {
-      border-color: #7c3aed;
-    }
-
-    input[type="password"]::placeholder { color: #444; }
-
-    button.submit-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #7c3aed, #4f46e5);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-    }
-
-    button.submit-btn:hover { opacity: 0.9; }
-    button.submit-btn:active { transform: scale(0.98); }
-    button.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .status {
-      margin-top: 16px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .status.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-
-    .status.success {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: #86efac;
-    }
-
-    .status.loading {
-      background: rgba(124, 58, 237, 0.1);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      color: #c4b5fd;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(196, 181, 253, 0.3);
-      border-top-color: #c4b5fd;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-
+    :root { --black: #0a0a0a; --white: #f5f5f0; --gray-light: #d0d0c8; --gray-mid: #999990; }
+    body { font-family: 'DM Mono', monospace; background: var(--white); color: var(--black); min-height: 100vh; overflow-x: hidden; }
+    header { display: flex; justify-content: space-between; padding: 28px 40px 0; position: fixed; top: 0; left: 0; right: 0; z-index: 10; background: var(--white); }
+    .brand { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.6; }
+    .brand span { color: var(--gray-mid); display: block; }
+    .status-block { text-align: right; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.6; }
+    .status-indicator { color: var(--gray-mid); }
+    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; margin-right: 6px; vertical-align: middle; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .page { display: grid; grid-template-columns: 1fr 1px 1fr; min-height: 100vh; padding-top: 80px; }
+    .left-col { display: flex; flex-direction: column; justify-content: center; padding: 60px 40px; overflow: hidden; }
+    .word { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 11vw, 155px); line-height: 0.92; letter-spacing: -0.01em; display: block; color: var(--black); transition: color 0.3s; }
+    .word.dim { color: var(--gray-light); }
+    .divider { background: #d8d8d0; align-self: stretch; margin: 80px 0; }
+    .right-col { padding: 60px 52px; display: flex; flex-direction: column; justify-content: center; }
+    .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+    .section-value { font-size: 13px; color: var(--gray-mid); line-height: 1.6; margin-bottom: 36px; font-weight: 300; }
+    .constraint-row { font-size: 12px; color: var(--gray-mid); font-weight: 300; line-height: 1.8; }
+    .constraints { margin-bottom: 40px; }
+    .upload-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; display: block; padding-bottom: 10px; border-bottom: 1.5px solid var(--black); margin-bottom: 16px; cursor: pointer; transition: color 0.2s; }
+    .upload-label:hover { color: var(--gray-mid); }
+    .file-input { display: none; }
+    .small-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 4px; }
+    .small-value { font-size: 12px; color: var(--gray-mid); font-weight: 300; margin-bottom: 28px; min-height: 20px; transition: color 0.3s; }
+    .small-value.has-file, .small-value.success { color: var(--black); }
+    .small-value.error-text { color: #c0392b; }
+    .password-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--gray-light); padding: 10px 0; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 300; color: var(--black); outline: none; letter-spacing: 0.05em; margin-bottom: 32px; transition: border-color 0.2s; }
+    .password-input::placeholder { color: var(--gray-light); font-style: italic; }
+    .password-input:focus { border-color: var(--black); }
+    .row-btn { background: none; border: none; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; cursor: pointer; padding: 0 0 10px 0; display: block; width: 100%; border-bottom: 1px solid var(--gray-light); margin-bottom: 12px; text-align: left; color: var(--gray-mid); transition: color 0.2s, border-color 0.2s; }
+    .row-btn.primary { color: var(--black); border-color: var(--black); font-weight: 400; margin-bottom: 32px; }
+    .row-btn.primary:hover:not(:disabled) { color: var(--gray-mid); }
+    .row-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .row-btn.active { color: var(--black); border-color: var(--black); }
+    .row-btn.active:hover { color: var(--gray-mid); }
+    .spin { display: inline-block; width: 9px; height: 9px; border: 1.5px solid var(--gray-light); border-top-color: var(--black); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 700px) {
+      .page { grid-template-columns: 1fr; }
+      .divider { display: none; }
+      .left-col { padding: 40px 28px 20px; }
+      .word { font-size: clamp(60px, 20vw, 100px); }
+      .right-col { padding: 20px 28px 60px; }
+      header { padding: 20px 28px 0; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">
-      <div class="logo-icon">🔓</div>
-      <h1>PDF Unlocker</h1>
+  <header>
+    <div class="brand">SYS.XXII™<span>PDF UTILITY</span></div>
+    <div class="status-block">LOCAL PROCESSING<span class="status-indicator"><span class="status-dot"></span>READY</span></div>
+  </header>
+
+  <div class="page">
+    <div class="left-col">
+      <span class="word" id="w1">SELECT</span>
+      <span class="word dim" id="w2">DECRYPT</span>
+      <span class="word dim" id="w3">EXPORT</span>
     </div>
-    <p class="subtitle">Remove password protection from any PDF instantly.</p>
+    <div class="divider"></div>
+    <div class="right-col">
+      <div class="section-label">Task Definition</div>
+      <div class="section-value">Remove password security from PDF documents locally.</div>
+      <div class="constraints">
+        <div class="section-label">Constraints</div>
+        <div class="constraint-row">Max file size: 100MB</div>
+        <div class="constraint-row">Format: .pdf only</div>
+      </div>
 
-    <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept=".pdf" />
-      <div class="drop-icon">📄</div>
-      <div class="drop-text"><strong>Click to upload</strong> or drag & drop</div>
-      <div class="drop-sub">PDF files only · Max 50MB</div>
+      <label class="upload-label" for="fileInput">Choose File to Unlock</label>
+      <input class="file-input" type="file" id="fileInput" accept=".pdf" />
+
+      <div class="small-label">Active Target</div>
+      <div class="small-value" id="activeTarget">No file selected</div>
+
+      <input class="password-input" type="password" id="password" placeholder="Enter document password..." />
+
+      <button class="row-btn primary" id="unlockBtn" onclick="unlockPDF()">Remove Security</button>
+
+      <div class="small-label">Process Result</div>
+      <div class="small-value" id="resultValue">—</div>
+
+      <div class="small-label">Original File</div>
+      <div class="small-value" id="originalValue">…</div>
+
+      <button class="row-btn" id="downloadBtn" disabled>Download Unlocked PDF</button>
+      <button class="row-btn" id="resetBtn" onclick="resetAll()">Process Another</button>
     </div>
-
-    <div class="file-info" id="fileInfo">
-      <span>📎</span>
-      <span class="file-name" id="fileName"></span>
-      <button class="remove-btn" id="removeFile" title="Remove">✕</button>
-    </div>
-
-    <label class="field-label" for="password">PDF Password (if required)</label>
-    <input type="password" id="password" placeholder="Leave blank if not password-protected" />
-
-    <button class="submit-btn" id="unlockBtn" onclick="unlockPDF()">Unlock & Download</button>
-
-    <div class="status" id="status"></div>
   </div>
 
   <script>
-    const fileInput = document.getElementById("fileInput");
-    const dropZone = document.getElementById("dropZone");
-    const fileInfo = document.getElementById("fileInfo");
-    const fileName = document.getElementById("fileName");
-    const status = document.getElementById("status");
+    const fileInput    = document.getElementById('fileInput');
+    const activeTarget = document.getElementById('activeTarget');
+    const resultValue  = document.getElementById('resultValue');
+    const originalValue= document.getElementById('originalValue');
+    const unlockBtn    = document.getElementById('unlockBtn');
+    const downloadBtn  = document.getElementById('downloadBtn');
+    const resetBtn     = document.getElementById('resetBtn');
+    const w1=document.getElementById('w1'), w2=document.getElementById('w2'), w3=document.getElementById('w3');
+    let downloadUrl = null, downloadName = 'unlocked.pdf';
 
-    fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
+    function setStep(n){ [w1,w2,w3].forEach((w,i)=>{ w.classList.toggle('dim', i!==n); }); }
 
-    document.getElementById("removeFile").addEventListener("click", () => {
-      fileInput.value = "";
-      fileInfo.style.display = "none";
-      dropZone.style.display = "";
-      hideStatus();
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files[0]; if(!f) return;
+      activeTarget.textContent = f.name; activeTarget.className = 'small-value has-file';
+      originalValue.textContent = f.name;
+      resultValue.textContent = '—'; resultValue.className = 'small-value';
+      if(downloadUrl){ URL.revokeObjectURL(downloadUrl); downloadUrl=null; }
+      downloadBtn.classList.remove('active'); downloadBtn.disabled = true;
+      resetBtn.classList.remove('active');
+      setStep(0);
     });
 
-    dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
-    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
-    dropZone.addEventListener("drop", e => {
-      e.preventDefault();
-      dropZone.classList.remove("dragover");
-      const f = e.dataTransfer.files[0];
-      if (f) { fileInput.files = e.dataTransfer.files; handleFile(f); }
-    });
-
-    function handleFile(f) {
-      if (!f) return;
-      if (!f.name.toLowerCase().endsWith(".pdf")) {
-        showStatus("error", "Please select a PDF file.");
-        return;
-      }
-      fileName.textContent = f.name;
-      fileInfo.style.display = "flex";
-      dropZone.style.display = "none";
-      hideStatus();
-    }
-
-    function showStatus(type, msg) {
-      status.className = "status " + type;
-      status.style.display = "block";
-      status.innerHTML = type === "loading"
-        ? `<span class="spinner"></span>${msg}`
-        : msg;
-    }
-
-    function hideStatus() {
-      status.style.display = "none";
-    }
-
-    async function unlockPDF() {
+    async function unlockPDF(){
       const file = fileInput.files[0];
-      if (!file) { showStatus("error", "Please select a PDF file first."); return; }
-
-      const btn = document.getElementById("unlockBtn");
-      btn.disabled = true;
-      showStatus("loading", "Removing password protection…");
-
-      const formData = new FormData();
-      formData.append("pdf", file);
-      formData.append("password", document.getElementById("password").value);
-
+      if(!file){ resultValue.textContent='No file selected.'; resultValue.className='small-value error-text'; return; }
+      unlockBtn.disabled=true; unlockBtn.innerHTML='<span class="spin"></span>Processing…';
+      setStep(1); resultValue.textContent='Working…'; resultValue.className='small-value';
+      const fd = new FormData();
+      fd.append('pdf', file); fd.append('password', document.getElementById('password').value);
       try {
-        const res = await fetch("/unlock", { method: "POST", body: formData });
-
-        if (res.ok) {
+        const res = await fetch('/unlock', {method:'POST', body:fd});
+        if(res.ok){
           const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          const disposition = res.headers.get("Content-Disposition");
-          const match = disposition && disposition.match(/filename="?([^"]+)"?/);
-          a.download = match ? match[1] : "unlocked.pdf";
-          a.href = url;
-          a.click();
-          URL.revokeObjectURL(url);
-          showStatus("success", "✓ Password removed! Your file is downloading.");
+          if(downloadUrl) URL.revokeObjectURL(downloadUrl);
+          downloadUrl = URL.createObjectURL(blob);
+          const cd = res.headers.get('Content-Disposition');
+          const m = cd && cd.match(/filename="?([^"]+)"?/);
+          downloadName = m ? m[1] : 'unlocked.pdf';
+          resultValue.textContent='Security stripped successfully.'; resultValue.className='small-value success';
+          setStep(2);
+          downloadBtn.classList.add('active'); downloadBtn.disabled=false;
+          resetBtn.classList.add('active');
         } else {
           const data = await res.json();
-          showStatus("error", data.error || "Something went wrong.");
+          resultValue.textContent = data.error||'Processing failed.'; resultValue.className='small-value error-text';
+          setStep(0);
         }
-      } catch (e) {
-        showStatus("error", "Network error. Please try again.");
-      } finally {
-        btn.disabled = false;
-      }
+      } catch { resultValue.textContent='Network error. Please retry.'; resultValue.className='small-value error-text'; setStep(0); }
+      finally { unlockBtn.disabled=false; unlockBtn.textContent='Remove Security'; }
+    }
+
+    downloadBtn.addEventListener('click', ()=>{
+      if(!downloadUrl) return;
+      const a=document.createElement('a'); a.href=downloadUrl; a.download=downloadName; a.click();
+    });
+
+    function resetAll(){
+      fileInput.value=''; activeTarget.textContent='No file selected'; activeTarget.className='small-value';
+      document.getElementById('password').value='';
+      resultValue.textContent='—'; resultValue.className='small-value';
+      originalValue.textContent='…';
+      downloadBtn.classList.remove('active'); downloadBtn.disabled=true;
+      resetBtn.classList.remove('active');
+      if(downloadUrl){ URL.revokeObjectURL(downloadUrl); downloadUrl=null; }
+      setStep(0);
     }
   </script>
 </body>
